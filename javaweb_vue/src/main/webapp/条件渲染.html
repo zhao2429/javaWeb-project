@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+  <script src="js/vue.js"></script>
+</head>
+<body>
+<div id="app">
+  {{name}}
+  {{num}}
+  {{flag}}
+  <button @click="num++">点我加1</button>
+  <button @click="flag = true">flag</button>
+<!--    条件渲染 满足条件显示内容-->
+    <h2 v-if="flag">您好</h2>
+    <h2 v-if="1== 1">您好2</h2>
+    <h2 v-if="1 === '1'">您好3</h2>
+
+    <hr>
+    <h2 v-if="num ===1">java</h2>
+    <h2 v-else-if="num ===2">mysql</h2>
+    <h2 v-else>呀屎啦你</h2>
+
+<!--  v-show 控制元素的渲染，但与v-if不同的是控制的是元素的显示和掩藏  适合频繁切换  -->
+    <hr>
+    <h2 v-show="num ===1">java</h2>
+    <h2 v-show="num ===2">mysql</h2>
+    <h2 v-show>呀屎啦你</h2>
+
+    <hr>
+<!--    如果想要控制一段代码显示和掩藏 不能使用v-show  template渲染时不会存在于页面中 ，无法去添加display属性-->
+    <template v-if="num ==1">
+        <h2>z</h2>
+        <h2>x</h2>
+        <h2>c</h2>
+        <h2>v</h2>
+    </template>
+</div>
+</body>
+</html>
+<script>
+  new Vue({
+    el:"#app",
+    data(){
+      return{
+        name:'张三',
+        num:0,
+        flag:false
+      }
+    }
+  })
+</script>

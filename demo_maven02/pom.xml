@@ -1,0 +1,54 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <!--  当前使用的maven文件-->
+  <modelVersion>4.0.0</modelVersion>
+  <!--  当前的项目坐标，以后这个项目可能会被别的 项目引用，引用是使用该坐标-->
+  <!-- 当然我们引用被人的项目和或jar也是使用此方式，，，坐标是maven中的唯一标识 -->
+  <groupId>com.maven02</groupId><!--  隶属的组织名，域名的反向-->
+  <!--  项目名，模块名-->
+  <artifactId>demo_maven02</artifactId>
+  <!--  设置当前项目的打包方式，默认是jar。web项目一般要设置为war-->
+  <packaging>war</packaging>
+  <!--  当前的版本-->
+  <version>1.0-SNAPSHOT</version>
+  <!-- 项目名-->
+  <name>demo_maven02 Maven Webapp</name>
+  <!--  示例地址，可有可无-->
+  <url>http://maven.apache.org</url>
+  <!--  管理当前项目所需要的依赖，jar包等，使用坐标-->
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <!-- 依赖的作用域，test表示在测试的时候使用！-->
+      <scope>test</scope>
+    </dependency>
+    <!--    引入mysql依赖-->
+    <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+      <dependency>
+        <groupId>mysql</groupId>
+        <artifactId>mysql-connector-java</artifactId>
+        <version>8.0.30</version>
+      </dependency>
+      <!--    德魯伊連接池-->
+        <!-- https://mvnrepository.com/artifact/com.alibaba/druid -->
+        <dependency>
+          <groupId>com.alibaba</groupId>
+          <artifactId>druid</artifactId>
+          <version>1.2.15</version>
+        </dependency>
+
+      <!--   servlet api在运行的服务器中会存在该依赖 我们写代码的时候引用一下即可  -->
+      <dependency>
+        <groupId>javax.servlet</groupId>
+        <artifactId>javax.servlet-api</artifactId>
+        <version>4.0.0</version>
+        <!--      编译，测试，都是用但是运行到服务器中不包含依赖-->
+        <scope>provided</scope>
+      </dependency>
+  </dependencies>
+  <build>
+    <finalName>demo_maven02</finalName>
+  </build>
+</project>

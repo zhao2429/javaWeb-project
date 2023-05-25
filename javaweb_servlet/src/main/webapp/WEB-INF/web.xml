@@ -1,0 +1,29 @@
+<!DOCTYPE web-app PUBLIC
+ "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+ "http://java.sun.com/dtd/web-app_2_3.dtd" >
+<!--整个web项目的配置文件-->
+<web-app>
+  <display-name>Archetype Created Web Application</display-name>
+
+<!--  配置访问servlet的xml内容-->
+<!--  1：给Tomcat配置一个servlet程序-->
+  <servlet>
+<!--    为下面的servlet程序起别名-->
+    <servlet-name>helloServletTwo</servlet-name>
+<!--    指定servlet程序所在的全类名-->
+    <servlet-class>ajax.servlet01.HelloServletTwo</servlet-class>
+  </servlet>
+<!--:2： 配置这个servlet访问的路径地址-->
+    <servlet-mapping>
+<!--路径匹配要执行的servlet-->
+      <servlet-name>helloServletTwo</servlet-name>
+<!--  告诉服务器我当前配置的地址会调用那个servlet类处理    -->
+      <url-pattern>/hello02</url-pattern>
+<!--   /斜杆在服务器解析的时候 表示地址为：http://IP地址：端口号/ 项目工程名
+      /hello02的意思是 http://localhost:8080/javaweb_servlet_war_exploded//hello02
+
+      客户端里面：
+      /aaa  http://localhost:8080//aaa
+ -->
+    </servlet-mapping>
+</web-app>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+  <script src="js/vue.js"></script>
+</head>
+<body>
+<div id="app">
+<!--  数据绑定就是将页面数据绑定到Vue对象中，或者Vue对象将数据拿到页面上-->
+<!--    1：插值语法-->
+    {{address}}<br>
+    <p>{{address}}</p>
+<!--    2：指令语法-->
+<!--    单项数据绑定  v-xx称为指令-->
+    <input type="text" v-bind:value="address"><br>
+<!--    简写-->
+    <input type="text" :value="address"><br>
+<!--    双向绑定 只有表单元素能用，用于数据收集-->
+    <input type="text" v-model:value="username"><br>
+<!--    简写-->
+    <input type="text" v-model="username"><br>
+</div>
+</body>
+</html>
+<script>
+  new Vue({
+    el:"#app",
+    data:{
+      address:'云南曲靖',
+      username:'周星星'
+    }
+  })
+</script>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+
+</head>
+<body>
+<center>
+    <h1>这里是员工的列表</h1>
+    <table width="800px" id="myTable" style="text-align: center" border="1">
+        <tr>
+            <td>编号</td>
+            <td>姓名</td>
+            <td>密码</td>
+            <td>年龄</td>
+            <td>电话</td>
+            <td>状态</td>
+            <td>操作</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>
+                <a href="#">修改</a>
+                <a href="#">删除</a>
+            </td>
+        </tr>
+    </table>
+    <h2><a href="register.html">点击新增数据信息</a></h2>
+</center>
+
+</body>
+</html>
+<!--  在此页面发送请求到服务器查询全部数据-->
+<script src="js/axios-0.18.0.js"></script>
+<script>
+  window.onload = function (){
+    axios.get("http://localhost:8080/javaweb_ajaxdemo/employee/findAll").then(function (resp){
+        //console.log(resp.data);
+        //如何将数据显示在页面上
+        //思路：将查询出来的数据遍历到tr中然后将tr放到table中
+        let employee = resp.data; //数据数组
+        //js不能只遍历其中的某一部分html标签
+        let tableTag = "<tr>\n" +
+            "            <td>编号</td>\n" +
+            "            <td>姓名</td>\n" +
+            "            <td>密码</td>\n" +
+            "            <td>年龄</td>\n" +
+            "            <td>电话</td>\n" +
+            "            <td>状态</td>\n" +
+            "            <td>操作</td>\n" +
+            "        </tr>"
+
+        //将查询后的数据拼接到表格数据中
+        for (let i = 0 ; i < employee.length ; i++){
+            //每次循环，取出循环对象
+            let emp = employee[i];
+            //将循环出来的标签拼接到字符串当中
+            tableTag += "<tr>\n" +
+                "            <td>"+emp.id+"</td>\n" +
+                "            <td>"+emp.userName+"</td>\n" +
+                "            <td>"+emp.passWord+"</td>\n" +
+                "            <td>"+emp.age+"</td>\n" +
+                "            <td>"+emp.phone+"</td>\n" +
+                "            <td>"+emp.status+"</td>\n" +
+                "            <td>\n" +
+                "                <a href=\"#\" id='update'>修改</a>\n" +
+                "                <a href=\"#\" id='del' onclick='del()'>删除</a>\n" +
+                "            </td>\n" +
+                "        </tr>";
+        }
+
+        //将我们拼接好的数据放到table中
+        document.getElementById("myTable").innerHTML = tableTag;
+
+        //以上方案遍历及其麻烦复杂，后面学习Vue会更加方便
+    });
+
+      // 删除功能
+
+         function del(id){
+             //将id封装为json格式数据
+             var data = {};
+             data.id = id;
+             var datastr = JSON.stringify(data);
+             var flag = confirm("是否需要进行删除？");
+             axios({
+                 method:"get",
+                 url:"http://localhost:8080/javaweb_ajaxdemo/employee/deletaById",
+                 data:datastr
+             }).then(function (resp){
+                 if (flag){
+                     alert("删除成功！");
+                     location.href="http://localhost:8080/javaweb_ajaxdemo/list.html";
+                 }
+             })
+     }
+  }
+
+
+</script>

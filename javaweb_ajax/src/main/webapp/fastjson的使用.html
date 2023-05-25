@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="js/axios-0.18.0.js"></script>
+  <script>
+    var user = {id:1,name:"张三",age:18}
+    //通过ajax发送一个带有对象的请求到服务器
+    axios({
+      method:'post',
+      url:"http://localhost:8080/javaweb_ajax/jsonServlet",
+      // axios会将携带的数据从js对象转为json对象，然后传输是转为json字符串
+      data:user
+    }).then(function (resp){
+        //axios请求完毕后会将传输过来的json字符串转为对象,
+        console.log(resp.data[0].name)
+    });
+
+
+  </script>
+</head>
+<body>
+
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>注册页面</title>
+</head>
+<body>
+<h1>注册页面</h1>
+<div>
+  <center>
+    <table>
+      <tr><td> 用户名：<input type="text" name="userName" id="userName"></td></tr>
+      <tr><td>密码：<input type="password" name="passWord" id="passWord"></td></tr>
+      <tr><td>年龄：<input type="number" name="age" id="age"></td></tr>
+      <tr><td> 电话：<input type="text" name="phone" id="phone"></td></tr>
+      <tr>
+        <td>状态：
+          <input type="radio" value="1" name="status" class="status" checked>启用
+          <input type="radio" value="0" name="status" class="status" >禁用
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <input type="button" id="btn" value="提交">
+          <input type="reset" value="重置">
+        </td>
+      </tr>
+      <tr>
+        <td><span id="msg" style="color: red"></span></td>
+      </tr>
+    </table>
+  </center>
+</div>
+</body>
+<script src="js/axios-0.18.0.js"></script>
+<script>
+  //为提交按钮绑定单击事件，提交ajax请求
+    document.querySelector("#btn").onclick = function (){
+      //定义空对象
+      var obj = {
+        "userName":"",
+        "passWord":"",
+        "age":"",
+        "phone":"",
+        "status":""
+      }
+      //收集表单中的内容
+        let username = document.getElementById("userName").value;
+        let   password = document.getElementById("passWord").value;
+        let  age = document.getElementById("age").value;
+        let phone = document.getElementById("phone").value;
+        var status = document.getElementsByName("status");
+      //将表单中的各项内容收集为对象的属性
+      obj.userName=username;
+      obj.passWord=password;
+      obj.age=age;
+      obj.phone=phone;
+        //判断勾选
+        for(let i = 0 ; i <status.length ; i++ ){
+          if (status[i].checked){
+            obj.status=status[i].value;
+          }
+        }
+
+        //通过axios将数据替吉奥你到服务器中
+        axios({
+          method:"post",
+          url:"http://localhost:8080/javaweb_ajaxdemo/employee/add",
+          data:obj
+        }).then(function (resp){
+          console.log(resp.data)
+          if (resp.data){
+            document.getElementById("msg").innerHTML="新增成功！";
+            alert(username+"注册成功！");
+            location.href="http://localhost:8080/javaweb_ajaxdemo/list.html";
+          }
+      })
+  }
+</script>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+<!--  1：引入axios包-->
+  <script src="js/axios-0.18.0.js"></script>
+  <script>
+    //2:axios发送ajax请求
+    //get请求
+    //axios({请求信息对象}).then(请求并响应成功执行的函数).catch(请求失败执行的函数);
+    // axios({
+    //   method:'get', //请求方式
+    //   url:"http://localhost:8080/javaweb_ajax/axios01?username=张三"        //请求地址
+    // }).then(function (resp){
+    //   //请求成功执行的操作; resp是一个形参但是服务器返回的数据会存储在该对象里
+    //     console.log(resp.data);
+    //
+    // }).catch(function (error){
+    //   //执行失败的操作
+    //   console.log(error.message);
+    // });
+
+    //post请求
+    var user = {username:"张三"};
+    axios({
+        method:"post",
+        url:"http://localhost:8080/javaweb_ajax/axios02",
+        //携带请求体参数，可以是带有键值对的字符串，也可以是对象,也可以js对象
+        //data:"username=张三"
+        data:user
+    }).then(function (resp){
+        console.log(resp.data);
+    }).catch(function (error){
+        console.log(error.message);
+    });
+
+
+    /**
+     * 扩展：
+     * 目前位置我们学习的请求仅仅有两个：get post
+     * 对于以后的学习会使用restful风格的请求：
+     * 一共有七种：（根据功能使用不同的请求）
+     * get请求， 用于查询的
+     * post请求， 用于新增的
+     * hadd 请求
+     * options请求
+     * patch请求
+     * delete请求 用于删除
+     * put请求 用于修改
+     * 目前技术，携带简单的参数如id，name用get即可
+     *          携带大量数据，如user student使用post更为方便
+     * 案凶手为以上的七种方式都提供一种简单的调用ajax方法
+     * 成为请求方法别名
+     *
+     */
+
+    //get
+    //axios.get(url,[config])
+    //axios.get("请求路径？参数名 = 值").then(function (resp){"成功的函数"});
+
+    //post
+    //axios.post(url,data)
+   // axios.post("请求地址",user).then(function (resp){"成功的函数"});
+  </script>
+</head>
+<body>
+
+</body>
+</html>

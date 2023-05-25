@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--version是指定版本 ；encoding是指定编码-->
+<!--xml的声明，说明文档的内容是什么，以及用什么规则来书写 ，或者是要求-->
+
+<!--
+xml的书写除了有一定的规则之外，不同的xml有不同的写法
+普通的xml：标签包含标签 ，需要闭合，，属性 = "值"
+框架的配置文件： 标签是固定的，，内容也是固定的，，不可以自定义  <a>
+-->
+<!--xml标签自定义普通的数据-->
+<!--父级标签，里面会包含多个student-->
+<students>
+    <!--第一个学生-->
+    <student id="a11">
+        <name>张三</name>
+        <grade>法律系</grade>
+        <age>35</age>
+    </student>
+    <!--第二个学生-->
+    <student id="a22" type="people">
+        <!--CDATA  文本域将括号中的内容识别为文本-->
+        <name><![CDATA[<<<<<<<<<小明>>>>>>>>>]]></name>
+        <grade>&lt;小学二年级&gt;</grade>
+        <age>8</age>
+    </student>
+    <!--第三个学生   是单标签-->
+    <student id="a33" type="people" name="小红" grade="小学5年级" age="11"/>
+
+</students><!--根标签仅有一个-->

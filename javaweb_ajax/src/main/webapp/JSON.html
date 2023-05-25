@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<script>
+    <!--JSON对象与js对象-->
+    <!--js对象的写法-->
+    var user = {
+        name:'张三',
+        age:18,
+        address:'昆明'
+    }
+/*简单的json对象*/
+    var user1 = {
+        "name":'张三',
+        "age":18,
+        "address":'昆明'
+    }
+    /*json数据的书写
+    * json由键值对组成，且使用大括号包围，键值对之间使用冒号隔开，，，多个值之间用逗号隔开
+    * 键=使用双引号引用起来
+    * json中的值可以很复杂，可以是数字，字符串，逻辑值，数组，对象，null
+    */
+    var obj = {
+        "key1":99,
+        "key2":"傻逼",
+        "key3":true,
+        "key4":[1,,2,3,4],
+        "key5":{"name":'zs',"age":10},
+        "key6":null,
+        "key7":[{"name":'abc'},{"name":'zzz'}]
+    }
+    // obj.key7[0].name
+    // obj.key2
+</script>
+<body>
+
+
+
+
+</body>
+</html>

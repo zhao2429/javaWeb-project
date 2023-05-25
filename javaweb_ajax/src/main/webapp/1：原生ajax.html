@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script>
+        //点击触发的函数
+        function sendAjax(){
+            //使用js发送ajax请求到服务器
+            //1:创建xmlHttpRequest对象用于发送请求，针对不同新老版本浏览器方式的不同
+            var xhttp;
+            if (window.XMLHttpRequest){
+                //新的浏览器
+                xhttp = new XMLHttpRequest();
+            }else {
+                //老的浏览器
+                xhttp = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+            //2:设置请求信息,参数：请求方式，请求路径，是否异步
+            //xhttp.open("GET","http://localhost:8080/javaweb_ajax/jaax01",true);
+            xhttp.open("GET","http://localhost:8080/javaweb_ajax/jaax01?username=张三&password=123");
+            //3:发送请求到服务器中
+            xhttp.send();
+            //4：处理请求后的响应内容
+            //4.1:判断响应的状态码和响应的状态是否是成功执行的
+            xhttp.onreadystatechange = function (){
+                //判断状态码是200 且状态返回4，表示整个请求就绪
+                if(xhttp.readyState == 4 && xhttp.status ==200){
+                    //处理返回的数据
+                    alert(xhttp.responseText);
+                    alert(this.responseText);
+                }
+                document.querySelector("#context").innerHTML = xhttp.responseText;
+            }
+
+
+        }
+    </script>
+</head>
+<body>
+<input type="button" value="点我发送ajax请求" onclick="sendAjax()">
+<p id="context">我是局部刷新的内容</p>
+<div>我是页面的内容</div>
+您好！
+</body>
+</html>

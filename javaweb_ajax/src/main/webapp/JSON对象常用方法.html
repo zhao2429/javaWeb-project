@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="js/axios-0.18.0.js"></script>
+  <script>
+    /*json数据其实有两种形式存在：
+    * 1：对象形式。我们叫做json对象，，对象在js中非常容易获取或者是属性值
+    * 2：字符串形式 我们叫做json字符串。在客户端与服务器传入的时候必须是字符串
+    * 一般我们在js中操作的是对象
+    * 在传输的时候使用字符串
+    * */
+
+    //json对象
+    var jsonobj = {
+      "name":"张三",
+      "age":18,
+      "city":"昆明"
+    }
+    //将对象转为字符串
+    var jsonstr = JSON.stringify(jsonobj);
+    alert(jsonstr);
+
+    //字符串
+    var jsonstr1 = '{"name":"张三","age":"18"}';
+    //将字符串转为string对象
+    var obj = JSON.parse(jsonstr1);
+    alert(typeof obj)
+
+    /*
+    * 强调：
+    * 在原生的js或者是ajax请求中我们通常获取的是对象，需要手动转成字符串传输
+    * 接收响应的时候得到的是字符串，需要转为对象，方便处理
+    * 通常 ajax框架无论您传递的是js对象 或者是json对象，请求是自动转为json字符串
+    * 响应式自动将响应回来的字符串转为对象
+    *
+    * */
+  </script>
+</head>
+<body>
+
+</body>
+</html>

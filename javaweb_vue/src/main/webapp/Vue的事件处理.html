@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+  <script src="js/vue.js"></script>
+</head>
+<body>
+<div id="app">
+{{name}}
+<!--  为元素绑定事件 v-on-->
+  <button v-on:click="show()">点击弹出信息</button>
+<!--没有参数的情况可以省略括号-->
+  <button v-on:click="show">点击弹出信息</button>
+<!--  简写
+事件的写法：@事件名=“函数”-->
+  <button @click="show()">点击弹出信息</button>
+  <br>
+  <hr>
+<!-- 事件的修饰符 -->
+<!--prevent 当执行事件时候阻止标签原来的默认行为  -->
+  <a href="http://www.baidu.com" @click.prevent="show()">百度一下</a>
+<!--  <a href="javascript:void(0)" @click="show()">百度一下</a>-->
+    <hr>
+<!--   once 只会触发一次-->
+    <button @click.once="show()">点击弹出信息</button>
+    <hr>
+    <div style="width: 100px; height: 100px; background-color: cadetblue">
+<!--  stop 阻止事件冒泡      -->
+        <button @click.stop="show()">我是按钮</button>
+    </div>
+</div>
+</body>
+</html>
+<script>
+  new Vue({
+    el:'#app',
+    data() {
+      return {
+        name:'张三'
+      };
+    },
+    //下面还可以有很多配置项
+    methods:{
+      //专门用于配置方法（Vue函数）
+      show(){
+        alert("您好！");
+        console.log(this.name)
+      }
+    }
+  })
+</script>

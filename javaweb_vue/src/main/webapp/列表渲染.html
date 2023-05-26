@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+  <script src="js/vue.js"></script>
+</head>
+<body>
+<div id="app">
+<!--  列表渲染就是将多个数据展示到页面上
+v-for用于展示数据。循环渲染
+语法：
+<标签 v-for="指定的表达式是"></标签>
+-->
+    <h2 v-for="add in address">
+        地址为：{{add}}
+    </h2>
+    <hr>
+<!--    索引-->
+    <h2 v-for="(add,i) in address" :key="i">
+        地址为：{{i}}--{{add}}
+    </h2>
+    <hr>
+<!--    遍历对象数组-->
+    <table border="1">
+        <tr>
+            <td>id</td>
+            <td>name</td>
+            <td>age</td>
+        </tr>
+        <tr v-for="(p,index) in persons" :key="index">
+            <td>{{p.id}}</td>
+            <td>{{p.name}}</td>
+            <td>{{p.age}}</td>
+        </tr>
+    </table>
+    <hr>
+<!--    遍历对象的属性-->
+    <ul>
+        <li v-for="(c,k) of car" :key="k">
+            {{c}}--{{k}}
+        </li>
+    </ul>
+    <hr>
+<!--    遍历字符串-->
+    <ul>
+        <li v-for="(s,char) in str" :key="char">
+            {{s}}--{{char}}
+        </li>
+    </ul>
+<!--    遍历指定次数-->
+    <ul>
+        <li v-for="num in 100">
+            <h2 v-if="num%2 == 0">{{num}}</h2>
+        </li>
+    </ul>
+</div>
+</body>
+</html>
+<script>
+  new Vue({
+    el:"#app",
+    data(){
+      return{
+        //数组
+        address:["昆明","曲靖","马龙"],
+          //对象数组 ，对应java的集合
+          persons:[
+              {id:'001',name:'张三',age:18},
+              {id:'002',name:'李四',age:20},
+              {id:'003',name:'王五',age:15}
+          ],
+          car:{
+              name:'野马',
+              price:'45万',
+              color:'绿色'
+          },
+          //字符串
+          str:'HolleWord!'
+      }
+    }
+  })
+</script>

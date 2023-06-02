@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>搜索页面</title>
+<style>
+    .box{
+        width:500px;
+        height:40px;
+        border:2px solid red;
+        margin:auto;
+    }
+    .input{
+        float:left;
+        width:400px;/*宽400*/
+        height:38px;/*高38（因为文本框内外边框要占用1像素所以总体高度减2，其他盒子同理）*/
+        outline:none;
+        border:none;/*取消文本框内外边框*/
+    }
+    .button{
+        float:left;
+        width:96px;
+        height:40px;
+        color:white;
+        background-color:red;/*将按钮背景设置为红色，字体设置为白*/
+        border:none;
+        outline:none;/*取消边框和外边框将按钮边框去掉*/
+    }
+
+</style>
+</head>
+<body>
+<form action="" method="post">
+    <h2>搜索</h2>
+    <div class="box">
+        <input type="text" class="input" name="username" id="username" placeholder="请输入需要搜索的内容">
+        <input type="button" class="button" id="btn" value="搜素">
+    </div>
+    <!--        显示结果-->
+    <div id="app">
+        <center>
+            <h1>这里是人员的列表</h1>
+            <table width="900px" id="myTable" style="text-align: center" border="1">
+                <tr>
+                    <td>编号</td>
+                    <td>姓名</td>
+                    <td>密码</td>
+                    <td>工作</td>
+                    <td>电话</td>
+                    <td>操作</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>
+                        <a href="#">修改</a>
+                        <a href="#">删除</a>
+                    </td>
+                </tr>
+            </table>
+        </center>
+    </div>
+
+
+</form>
+</body>
+</html>
+<script src="js/axios-0.18.0.js"></script>
+<script>
+    //为提交按钮绑定单击事件，提交ajax请求
+    document.querySelector("#btn").onclick = function (){
+        //定义空对象
+        var obj = {
+            username:"",
+        }
+        //收集表单中的内容
+        let username = document.getElementById("username").value;
+        //将表单中的各项内容收集为对象的属性
+        obj.username=username;
+
+        //通过axios将数据替吉奥你到服务器中
+        axios({
+            method:"post",
+            url:"http://localhost:8080/javaweb_zhoukao1/job/find",
+            data:obj
+        }).then(function (resp){
+            if (resp.data){
+                alert(username+"查询成功！");
+                console.log(resp.data);
+                let job = resp.data; //数据数组
+                let tableTag = "<tr>\n" +
+                    "            <td>编号</td>\n" +
+                    "            <td>姓名</td>\n" +
+                    "            <td>密码</td>\n" +
+                    "            <td>工作</td>\n" +
+                    "            <td>电话</td>\n" +
+                    "            <td>操作</td>\n" +
+                    "        </tr>"
+                //将查询后的数据拼接到表格数据中
+                for (let i = 0 ; i < job.length ; i++){
+                    //每次循环，取出循环对象
+                    let j = job[i];
+                    console.log(j);
+                    //将循环出来的标签拼接到字符串当中
+                    tableTag += "<tr>\n" +
+                        "            <td>"+j.id+"</td>\n" +
+                        "            <td>"+j.username+"</td>\n" +
+                        "            <td>"+j.password+"</td>\n" +
+                        "            <td>"+j.jobs+"</td>\n" +
+                        "            <td>"+j.phone+"</td>\n" +
+                        "            <td>\n" +
+                        "                <a href=\"#\" id='update'>修改</a>\n" +
+                        "                <a href=\"#\" id='del' >删除</a>\n" +
+                        "            </td>\n" +
+                        "        </tr>";
+                }
+                //将我们拼接好的数据放到table中
+                console.log("tableTag");
+                document.getElementById("myTable").innerHTML = tableTag;
+            }
+        })
+
+    }
+
+</script>

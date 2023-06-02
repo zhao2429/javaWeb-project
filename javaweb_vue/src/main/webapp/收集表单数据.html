@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+  <script src="js/vue.js"></script>
+</head>
+<body>
+<div id="app">
+<!--  v-model 收集数据的注意点
+v-model提供了修饰符
+trim表示去除收尾空格
+number将字符串转为有效数字
+
+默认情况下复选框收集的是Boolean的值，选中收集为TRUE 没有则为FALSE
+如果需要收集选中提交的多个值，必须将对象接收改为数组，并且必须value有值
+
+lazy懒加载 等待光标失去光标的时候在收集提交到data的模型里面以便节约资源资源
+
+-->
+  <form>
+    账号：<input type="text" v-model.trim="user.account"><br>
+    密码：<input type="password" v-model="user.password"><br>
+    年龄：<input type="number" v-model.number="user.age"><br>
+    性别：
+    <input type="radio" name="sex" value="男" v-model="user.sex">男
+    <input type="radio" name="sex" value="女" v-model="user.sex">女
+    <br>
+    爱好：
+    <input type="checkbox" value="唱" v-model="user.hobby">唱
+    <input type="checkbox" value="跳" v-model="user.hobby">跳
+    <input type="checkbox" value="rap" v-model="user.hobby">rap
+    <br>
+    <select>
+      <option value="">请选择学校</option>
+      <option value="云大" v-model="user.school">云南大学</option>
+      <option value="农大" v-model="user.school">云南农业大学</option>
+      <option value="理工大" v-model="user.school">云南理工大学</option>
+    </select>
+    <br>
+    其他的补充：
+    <textarea v-model.lazy="user.other"></textarea><br>
+    <button type="submit">提交</button>
+  </form>
+</div>
+</body>
+</html>
+<script>
+  new Vue({
+    el:"#app",
+    data(){
+      return{
+        /*  定义 数据模型收集表单数据* */
+        user:{
+          account:'' ,//账号
+          password:'',//密码
+          age:0,//年龄
+          sex:'',//性别
+          hobby:[],//爱好
+          school:'',//毕业学校
+          other:''//其他
+        },
+        methods:{
+          send(){
+
+          }
+        }
+      }
+    }
+  })
+</script>

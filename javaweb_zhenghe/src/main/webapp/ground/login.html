@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录页面</title>
+    <link rel="stylesheet" href="ground/element-ui/lib/theme-chalk/index.css">
+    <style>
+        *{
+            //清除默认样式
+            margin: 0;
+            padding: 0;
+        }
+        body{
+            background-image: url("ground/imgs/huanghun.jpg");
+            background-repeat: no-repeat;
+            background-size: 100% 720px;
+        }
+        #login{
+            /*  将盒子设置为弹性盒子*/
+            display: flex;
+            /*设置弹性盒子的元素的对齐方式*/
+            justify-content: center;
+            /*侧轴对齐*/
+            align-items: center;
+            /*对于没有设置过高度，宽度的盒子需要设置下面属性才可以居中*/
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+
+        }
+        .login{
+            width: 700px;
+            height: 500px;
+            /*margin: 0 auto;*/
+            background-color: rgba(252,230,201,0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 20px;
+        }
+    </style>
+</head>
+<body>
+<div id="login">
+<!--    定义存储登录按钮的盒子-->
+    <div class="login"
+         v-loading="loading"
+         element-loading-text="拼命加载中"
+         element-loading-spinner="el-icon-loading"
+         element-loading-background="rgba(0, 0, 0, 0.8)">
+        <el-form ref="ruleform" :rules="rules" :model="form" label-width="80px">
+            <el-form-item label="用户名" prop="username">
+                <el-input v-model="form.username" placeholder="请输入用户名" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="密码" prop="password">
+                <el-input show-password v-model="form.password" placeholder="请输入密码" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" @click="onSubmit('ruleform')">立即登录</el-button>
+                <el-button type="danger" @click="reset('ruleform')">清空数据</el-button>
+            </el-form-item>
+        </el-form>
+    </div>
+</div>
+</body>
+</html>
+<!--1.引入Vue.js-->
+<script src="ground/js/vue.js"></script>
+<script src="ground/js/axios-0.18.0.js"></script>
+<!--2：引入elementUI.js-->
+<script src="ground/element-ui/lib/index.js"></script>
+<script>
+    new Vue({
+        el:"#login",
+        data(){
+            return{
+                form: {
+                   username:'',
+                    password:''
+                },
+                loading:false,
+            //     定义表单验证的规则
+                rules:{
+                //     指定需要验证的属性和规则,多条规则
+                    username:[
+                    //     第一条规则,第一个是必填，第二个是错误提示信息，第三个是什么时候触发
+                        {required: true, message: '用户名不能为空', trigger: 'blur' },
+                        {min: 2, max: 5, message: '用户名长度在 2 到 5 个字符', trigger: 'blur'}
+                    ],
+                    password:[
+                        {required: true, message: '密码不能为空', trigger: 'blur'},
+                    ]
+                }
+            }
+        },
+        methods: {
+            onSubmit(formName) {
+                // 表单验证通过后提交
+                // 通过Vue对象来使用热饭属性获取表单对象
+                this.$refs[formName].validate((valid) => {
+                    if(valid){
+                        this.loading=true;
+                        //通过验证,发送数据到服务器验证登录并且返回结果
+                        //判断登录的结果
+                        axios({
+                            method:'post',
+                            url:'http://localhost:8080/javaweb_zhenghe/student/login',
+                            data:this.form
+                        }).then(resp => {
+                            console.log(resp.data);
+                            //根据后台响应的结果判断显示
+                            if (resp.data == '-1'){
+                                //用户名不存在
+                                this.loading = false;
+                                this.$message.error('用户名不存在，请重试！');
+                                return false;
+                            }
+                            if (resp.data == '-2'){
+                                //密码错误
+                                this.loading = false;
+                                this.$message.error('用户名密码错误，请重试！');
+                                return false;
+                            }
+                            //以上判断都没有问题
+                            //成功跳转首页
+                            //可以将登录成功后的信息存储起来方便在页面展示
+                            localStorage.setItem("loginStudent",resp.data);
+                            location.href="http://localhost:8080/javaweb_zhenghe/ground/index.html";
+                            });
+
+                    }else {
+                        //信息验证错误
+                        console.log('失败!');
+                        return false;
+
+                    }
+                })
+            },
+            // reset(){
+            //     this.form={};
+            // }
+        //     清空表单
+            reset(formName) {
+                // 获取多有表单，清空所有属性
+
+                this.$refs[formName].resetFields();
+            }
+
+        }
+    })
+</script>

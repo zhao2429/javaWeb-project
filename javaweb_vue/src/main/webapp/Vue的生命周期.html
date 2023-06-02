@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+  <script src="js/vue.js"></script>
+</head>
+<body>
+<div id="app"></div>
+</body>
+</html>
+<script>
+  new Vue({
+    /*Vue的生命周期：又叫做生命周期函数或者是生命周期回调函数 或者是生命周期钩子
+    * Vue在创建到销毁的过程中经历的函数的使用
+    * 八个阶段
+    * befoeCreate 创建对象之前
+    * created  创建对象之后
+    * beforeMount 挂载数据之前
+    * mounted 挂载完成（关注）
+    * beforeupdate 修改数据之前
+    * updated  修改数之后
+    * beforeDestory 销毁之前（关注）
+    * destroyed 销毁之后
+    * 都是函数
+    * 总结： mounted 发送ajax请求
+    * beforeDestroy 清除定时器，解绑数据 等收尾工具
+    * */
+    el:"#app",
+    data(){
+      return{
+
+      }
+    },
+      beforeCreate(){console.log("创建之前")},
+      created(){console.log("创建之后")},
+      beforeMount(){console.log("挂载之前")},
+      mounted(){console.log("挂载完成")},
+      beforeUpdate(){console.log("更新之前")},
+      updated(){console.log("更新之前")},
+      beforeDestroy(){console.log("销毁之前")},
+      destroyed(){console.log("销毁完成")}
+  })
+</script>

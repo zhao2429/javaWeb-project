@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录页面</title>
+</head>
+<body>
+<h2>请进行登录验证！</h2>
+<div>
+  <center>
+
+      <table>
+          <tr>
+            <td>用户名：</td>
+            <td><input type="text" name="username" id="username" placeholder="请输入用户名！"></td>
+          </tr>
+        <tr>
+          <td>密码：</td>
+          <td><input type="password" name="password" id="password"></td>
+        </tr>
+        <tr>
+          <td></td>
+        </tr>
+        <tr>
+          <td><input type="submit" value="登录" id="btn"></td>
+          <td><input type="reset" value="重置"></td>
+        </tr>
+      </table>
+
+  </center>
+</div>
+</body>
+</html>
+<script src="js/axios-0.18.0.js"></script>
+<script>
+  //为提交按钮绑定单击事件，提交ajax请求
+  var btn = document.querySelector("#btn");
+  btn.onclick = function (){
+
+    //定义空对象
+    var obj = {
+      "username":"",
+      "password":"",
+    }
+    //收集表单中的内容
+    let username = document.getElementById("username").value;
+    let   password = document.getElementById("password").value;
+    //将表单中的各项内容收集为对象的属性
+    obj.username=username;
+    obj.password=password;
+
+    //通过axios将数据替吉奥你到服务器中
+    axios({
+      method:"post",
+      url:"http://localhost:8080/javaweb_zhoukao1/job/login",
+      data:obj
+    }).then(function (resp){
+      console.log(resp.data)
+      if (resp.data){
+        alert(username+"登录成功！");
+        location.href="http://localhost:8080/javaweb_zhoukao1/list.html";
+      }
+    })
+  }
+</script>

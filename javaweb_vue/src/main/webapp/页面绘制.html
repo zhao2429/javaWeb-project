@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>elementUi页面的制作</title>
+    <link rel="stylesheet" href="element-ui/lib/theme-chalk/index.css">
+    <style>
+        .el-table .warning-row {
+            background: oldlace;
+        }
+
+        .el-table .success-row {
+            background: #f0f9eb;
+        }
+    </style>
+
+</head>
+<body>
+<div id="app">
+<!--    搜索框-->
+    <el-row>
+        <el-form :inline="true" :model="search" class="demo-form-inline">
+            <el-form-item label="姓名">
+                <el-input v-model="search.username" placeholder="请输入姓名"></el-input>
+            </el-form-item>
+            <el-form-item label="选择所在年级">
+                <el-select v-model="search.grade" placeholder="年级">
+                    <el-option label="不选择" value=""></el-option>
+                    <el-option label="一年级" value="1"></el-option>
+                    <el-option label="二年级" value="2"></el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" @click="onSubmit">查询</el-button>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" icon="el-icon-refresh" @click="reset">重置</el-button>
+            </el-form-item>
+        </el-form>
+    </el-row>
+<!--    提供操作的按钮组-->
+    <el-row>
+        <el-button type="danger" icon="el-icon-delete-solid" @click="dalete()">批量删除</el-button>
+        <el-button type="danger" icon="el-icon-plus" @click="add()">新增</el-button>
+    </el-row>
+<!--    新增弹出框-->
+    <el-dialog :title="info" :visible.sync="dialogFormVisible">
+        <el-form :model="student">
+            <el-form-item label="学生姓名" :label-width="formLabelWidth">
+                <el-input v-model="student.username" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="密码" :label-width="formLabelWidth">
+                <el-input v-model="student.password" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="年龄" :label-width="formLabelWidth">
+                <el-input v-model="student.age" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="电话" :label-width="formLabelWidth">
+                <el-input v-model="student.phone" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="状态" :label-width="formLabelWidth">
+                <el-select v-model.number="student.status">
+                    <el-option :label="1" >启用</el-option>
+                    <el-option :label="0" >禁用</el-option>
+                </el-select>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="out()">取 消</el-button>
+            <el-button type="primary" @click="okDo()">确 定</el-button>
+        </div>
+    </el-dialog>
+<!--    渲染数据表格-->
+    <template>
+        <el-table
+                :data="tableData"
+                style="width: 100%"
+                :row-class-name="tableRowClassName"
+                @selection-change="handleSelectionChange">
+            <el-table-column
+                    type="selection"
+                    width="55"
+                    align="center">
+            </el-table-column>
+            <el-table-column
+                    prop="id"
+                    label="编号"
+                    width="180">
+            </el-table-column>
+            <el-table-column
+                    prop="username"
+                    label="姓名"
+                    width="180">
+            </el-table-column>
+            <el-table-column
+                    prop="password"
+                    label="密码"
+                    width="180">
+            </el-table-column>
+            <el-table-column
+                    prop="age"
+                    label="年龄"
+                    width="180">
+            </el-table-column>
+            <el-table-column
+                    prop="phone"
+                    label="电话"
+                    width="180">
+            </el-table-column>
+            <el-table-column
+                    prop="status"
+                    label="状态"
+                    width="180">
+            </el-table-column>
+            <el-table-column label="操作">
+                <template slot-scope="scope">
+                    <el-button
+                            size="mini"
+                            @click="handleEdit(scope.$index, scope.row),infoEdit()">编辑</el-button>
+                    <el-button
+                            size="mini"
+                            type="danger"
+                            @click="handleDelete(scope.$index, scope.row),openDelete()">删除</el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+    </template>
+<!--    分页-->
+    <div class="block">
+        <el-pagination
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :current-page="currentPage"
+                :page-sizes="[10, 20, 50, 100]"
+                :page-size="100"
+                layout="sizes, prev, pager, next, jumper,->,total"
+                :total="total">
+        </el-pagination>
+    </div>
+
+</div>
+</body>
+</html>
+<!--1.引入Vue.js-->
+<script src="js/vue.js"></script>
+<!--2：引入elementUI.js-->
+<script src="element-ui/lib/index.js"></script>
+<script>
+    new Vue({
+        el:"#app",
+        data(){
+            return{
+                search: {
+                    username: '',
+                    grade: ''
+
+                },
+                student:{
+
+                },
+                info:'',
+
+                dialogTableVisible: false,
+                dialogFormVisible: false,
+                form: {
+                    name: '',
+                    region: '',
+                    date1: '',
+                    date2: '',
+                    delivery: false,
+                    type: [],
+                    resource: '',
+                    desc: ''
+                },
+                formLabelWidth: '120px',
+
+                tableData: [{
+                    id:1,
+                    username: '王小虎',
+                    password:'123456',
+                    age:18,
+                    phone:'12345678911',
+                    status:1
+                }, {
+                    id:2,
+                    username: '王大虎',
+                    password:'456789',
+                    age:22,
+                    phone:'12345678911',
+                    status:1
+
+                }],
+            //     多选事件,选中时，会将选中的对象传入数组中，可以做批量删除
+                multipleSelection: [],
+            //     分页
+                currentPage:2,//当前页
+                total:100,//总页数
+
+
+            }
+        },
+        // 搜索功能的方法
+        methods: {
+            onSubmit() {
+                console.log('submit!');
+            },
+            // 重置
+            reset(){
+                this.search={};
+            },
+        //     删除
+            delete(){
+                console.log('delete!');
+            },
+        //     新增
+            add(){
+                //弹出新增框
+                this.dialogFormVisible = true;
+                this.student = {};
+                console.log('add!');
+                //设置文字
+                this.info="新增数据信息";
+            },
+            // 弹出框关闭按钮
+            out(){
+                this.dialogFormVisible = false;
+                this.student = {};
+                this.$message('您取消了操作！');
+            },
+            // 弹出框提交按钮
+            okDo(){
+
+            },
+        //     列表颜色
+            tableRowClassName({row, rowIndex}) {
+                if (rowIndex === 1) {
+                    return 'warning-row';
+                } else if (rowIndex === 3) {
+                    return 'success-row';
+                }
+                return '';
+            },
+        //     表格操作
+            handleEdit(index, row) {
+                console.log(index, row);
+            },
+            handleDelete(index, row) {
+                console.log(index, row);
+            },
+            //编辑
+            infoEdit(){
+                console.log('编辑！');
+                this.info="编辑信息！";
+                this.dialogFormVisible = true;
+                //也可以根据数据库查询
+                //this.student
+            },
+        //     表格删除功能
+            openDelete() {
+                this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    this.$message({
+                        type: 'success',
+                        message: '删除成功!'
+                    });
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+            },
+        //     多选触发的事件
+            handleSelectionChange(val) {
+                this.multipleSelection = val;
+            },
+        //     分页
+            handleSizeChange(val) {
+                console.log(`每页 ${val} 条`);
+            },
+            handleCurrentChange(val) {
+                console.log(`当前页: ${val}`);
+            }
+
+        }
+    })
+</script>

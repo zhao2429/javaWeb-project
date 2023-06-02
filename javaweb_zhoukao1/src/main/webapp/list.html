@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>人员列表</title>
+
+</head>
+<body>
+<div id="app">
+<center>
+    <h1>这里是人员的列表</h1>
+    <table width="900px" id="myTable" style="text-align: center" border="1">
+        <tr>
+            <td>编号</td>
+            <td>姓名</td>
+            <td>密码</td>
+            <td>工作</td>
+            <td>电话</td>
+            <td>操作</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>
+                <a href="#">修改</a>
+                <a href="#">删除</a>
+            </td>
+        </tr>
+    </table>
+    <h2><a href="add.html">点击新增数据信息</a></h2>
+    <h2><a href="search.html">点击搜索人员信息</a></h2>
+</center>
+</div>
+</body>
+</html>
+<!--  在此页面发送请求到服务器查询全部数据-->
+<script src="js/axios-0.18.0.js"></script>
+<script>
+    window.onload = function (){
+        axios.get("http://localhost:8080/javaweb_zhoukao1/job/findAll").then(function (resp){
+            //将查询出来的数据遍历到tr中然后将tr放到table中
+            let job = resp.data; //数据数组
+            let tableTag = "<tr>\n" +
+                "            <td>编号</td>\n" +
+                "            <td>姓名</td>\n" +
+                "            <td>密码</td>\n" +
+                "            <td>工作</td>\n" +
+                "            <td>电话</td>\n" +
+                "            <td>操作</td>\n" +
+                "        </tr>"
+            //将查询后的数据拼接到表格数据中
+            for (let i = 0 ; i < job.length ; i++){
+                //每次循环，取出循环对象
+                let j = job[i];
+                //将循环出来的标签拼接到字符串当中
+                tableTag += "<tr>\n" +
+                    "            <td>"+j.id+"</td>\n" +
+                    "            <td>"+j.username+"</td>\n" +
+                    "            <td>"+j.password+"</td>\n" +
+                    "            <td>"+j.jobs+"</td>\n" +
+                    "            <td>"+j.phone+"</td>\n" +
+                    "            <td>\n" +
+                    "                <a href=\"#\" id='update'>修改</a>\n" +
+                    "                <a href=\"#\" id='del' >删除</a>\n" +
+                    "            </td>\n" +
+                    "        </tr>";
+            }
+            //将我们拼接好的数据放到table中
+            document.getElementById("myTable").innerHTML = tableTag;
+        });
+    }
+</script>

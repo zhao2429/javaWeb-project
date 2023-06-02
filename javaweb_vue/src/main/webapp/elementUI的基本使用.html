@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+<!--    3引入css文件-->
+    <link rel="stylesheet" href="element-ui/lib/theme-chalk/index.css">
+</head>
+<body>
+<div id="app">
+<!--  一行-->
+    <el-row>
+        <el-button>我是按钮</el-button>
+        <el-button type="info">我是按钮</el-button>
+        <el-button type="success">我是按钮</el-button>
+        <el-button type="danger">我是按钮</el-button>
+        <el-button type="danger" icon="el-icon-delete" circle></el-button>
+    </el-row>
+    <el-row>
+        <template>
+            <el-radio v-model="radio" label="1">备选项</el-radio>
+            <el-radio v-model="radio" label="2">备选项</el-radio>
+        </template>
+    </el-row>
+
+</div>
+</body>
+</html>
+<!--1.引入Vue.js-->
+<script src="js/vue.js"></script>
+<!--2：引入elementUI.js-->
+<script src="element-ui/lib/index.js"></script>
+<script>
+    new Vue({
+        el:"#app",
+        data(){
+            return{
+                radio: '1'
+            }
+        }
+    })
+</script>

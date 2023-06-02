@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>新增页面</title>
+</head>
+<body>
+<div id="app">
+    <h2>请完成人员的新增信息：</h2>
+  <center>
+      <table style="margin-top: 60px">
+          <tr>
+              <td>用户名：</td>
+              <td><input type="text" id="username" v-model="username"></td>
+          </tr>
+          <tr>
+              <td>密码：</td>
+              <td><input type="password" id="password" v-model="password"></td>
+          </tr>
+          <tr>
+              <td>工作：</td>
+              <td><input type="text" id="jobs" v-model="jobs"></td>
+          </tr>
+          <tr>
+              <td>电话：</td>
+              <td><input type="text" id="phone" v-model="phone"></td>
+          </tr>
+          <tr>
+              <td colspan="2"><button type="button" v-on:click="add()" value="新增" style="width: 150px; height: 20px; border: 1px solid chocolate; border-radius: 25px;">新增</button>
+              </td>
+              <td></td>
+          </tr>
+      </table>
+  </center>
+</div>
+</body>
+</html>
+<script src="js/axios-0.18.0.js"></script>
+<script src="js/vue.js"></script>
+<script>
+    new Vue({
+        el:"#app",
+        data(){
+            return{
+                username:'',
+                password:'',
+                jobs:'',
+                phone:''
+            }
+        },
+        methods:{
+            add(){
+
+                let job = {
+                    username: this.username,
+                    password:this.password,
+                    jobs:this.jobs,
+                    phone:this.phone
+                };
+                axios({
+                    method:"post",
+                    url:"http://localhost:8080/javaweb_zhoukao1/job/add",
+                    data:job
+                }).then(function (resp){
+                    if (resp.data){
+                        alert("新增成功！");
+                        location.href="http://localhost:8080/javaweb_zhoukao1/list.html";
+                    }
+                }).catch(function (error){
+                    console.log(error);
+                })
+            }
+        }
+    })
+</script>

@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>elementUi页面的制作</title>
+    <link rel="stylesheet" href="./element-ui/lib/theme-chalk/index.css">
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        .el-table .warning-row {
+            background: oldlace;
+        }
+
+        .el-table .success-row {
+            background: #f0f9eb;
+        }
+    </style>
+
+</head>
+<body>
+<div id="app">
+<!--    搜索框-->
+    <el-row>
+        <el-form :inline="true" :model="search" class="demo-form-inline">
+            <el-form-item label="姓名">
+                <el-input v-model="search.username" placeholder="请输入姓名"></el-input>
+            </el-form-item>
+            <el-form-item label="选择状态">
+                <el-select v-model="search.status" placeholder="请选择状态">
+                    <el-option label="启用" value="1"></el-option>
+                    <el-option label="禁用" value="0"></el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" @click="onSubmit()">查询</el-button>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" icon="el-icon-refresh" @click="reset()">重置</el-button>
+            </el-form-item>
+        </el-form>
+    </el-row>
+<!--    提供操作的按钮组-->
+    <el-row>
+        <el-button type="danger" icon="el-icon-delete-solid" @click="batchDelete()">批量删除</el-button>
+        <el-button type="danger" icon="el-icon-plus" @click="add()">新增</el-button>
+    </el-row>
+<!--    新增弹出框-->
+    <el-dialog :title="info" :visible.sync="dialogFormVisible">
+        <el-form :model="student">
+            <el-form-item label="学生姓名" :label-width="formLabelWidth">
+                <el-input v-model="student.username" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="密码"  :label-width="formLabelWidth">
+                <el-input show-password v-model="student.password" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="年龄" :label-width="formLabelWidth">
+                <el-input v-model="student.age" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="电话" :label-width="formLabelWidth">
+                <el-input v-model="student.phone" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="状态" :label-width="formLabelWidth">
+                <el-radio-group v-model.number="student.status">
+                    <el-radio :label="1">启用</el-radio>
+                    <el-radio :label="0">禁用</el-radio>
+                </el-radio-group>
+            </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="out()">取 消</el-button>
+            <el-button type="primary" @click="okDo()">确 定</el-button>
+        </div>
+    </el-dialog>
+<!--    渲染数据表格-->
+    <template>
+        <el-table
+                :data="tableData"
+                style="width: 100%"
+                :row-class-name="tableRowClassName"
+                @selection-change="handleSelectionChange">
+            <el-table-column
+                    type="selection"
+                    width="55"
+                    align="center">
+            </el-table-column>
+            <el-table-column
+                    prop="id"
+                    label="编号"
+                    width="180">
+            </el-table-column>
+            <el-table-column
+                    prop="username"
+                    label="姓名"
+                    width="180">
+            </el-table-column>
+            <el-table-column
+                    prop="password"
+                    label="密码"
+                    width="180">
+            </el-table-column>
+            <el-table-column
+                    prop="age"
+                    label="年龄"
+                    width="180">
+            </el-table-column>
+            <el-table-column
+                    prop="phone"
+                    label="电话"
+                    width="180">
+            </el-table-column>
+            <el-table-column
+                    prop="status"
+                    label="状态"
+                    width="120">
+            </el-table-column>
+            <el-table-column label="操作">
+                <template slot-scope="scope">
+                    <el-button
+                            size="mini"
+                            @click="handleEdit(scope.row)">编辑</el-button>
+                    <el-button
+                            size="mini"
+                            type="danger"
+                            @click="handleDelete(scope.row)">删除</el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+    </template>
+<!--    分页-->
+    <div class="block">
+        <el-pagination
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :current-page="currentPage"
+                :page-sizes="[5, 10, 15, 20]"
+                :page-size="pageSize"
+                layout="sizes, prev, pager, next, jumper,->,total"
+                :total="total">
+        </el-pagination>
+    </div>
+
+</div>
+</body>
+</html>
+<!--1.引入Vue.js-->
+<script src="./js/vue.js"></script>
+<!--2：引入elementUI.js-->
+<script src="./element-ui/lib/index.js"></script>
+<script src="./js/axios-0.18.0.js"></script>
+<script>
+    // import row from "./element-ui/packages/row";
+
+    new Vue({
+        el:"#app",
+        data(){
+            return{
+                search: {
+                },
+                //收集弹出数据，定义一个空对象
+                student:{
+
+                },
+                info:'',
+
+                dialogFormVisible: false,
+                formLabelWidth: '120px',
+
+                tableData: [{
+                    id:1,
+                    username: '王小虎',
+                    password:'123456',
+                    age:18,
+                    phone:'12345678911',
+                    status:1
+                }, {
+                    id:2,
+                    username: '王大虎',
+                    password:'456789',
+                    age:22,
+                    phone:'12345678911',
+                    status:1
+
+                }],
+            //     多选事件,选中时，会将选中的对象传入数组中，可以做批量删除
+                multipleSelection: [],
+            //     分页
+                currentPage:1,//当前页
+                total:100,//总页数
+                pageSize:5,//每页默认显示几条
+                //
+                ok:'',
+                //需要删除的多个id
+                ids:[]
+
+            }
+        },
+        // 搜索功能的方法
+        methods: {
+            //发送请求查询全部
+            //单纯查询全部
+            getAll(){
+                // axios.get("http://localhost:8080/javaweb_zhenghe/student/findAll").then((resp) =>{
+                //     console.log(resp.data);
+                //     //将查询到的数据赋值给数据模型
+                //     this.tableData=resp.data;
+                // })
+
+
+                //带分页查询全部，参数携带当前页和每页显示几条
+                // axios.get("http://localhost:8080/javaweb_zhenghe/student/findAllByPage?currentPage="+this.currentPage+"&pageSize="+this.pageSize).then((resp) =>{
+                //             console.log(resp.data);
+                //             //将查询到的数据赋值给数据模型
+                //             this.tableData=resp.data.list;/*数据*/
+                //             this.total = resp.data.count;/*数据的总数*/
+                //         });
+                //如果有模糊条件，带条件分页，如果没有则直接分页（初始化）
+                axios.post("http://localhost:8080/javaweb_zhenghe/student/findAllByPageIf?currentPage="+this.currentPage+"&pageSize="+this.pageSize,this.search).then((resp) =>{
+                    console.log(resp.data);
+                    //将查询到的数据赋值给数据模型
+                    this.tableData=resp.data.list;/*数据*/
+                    this.total = resp.data.count;/*数据的总数*/
+                });
+            },
+
+            // 搜索功能
+            onSubmit() {
+                console.log('submit!');
+                //直接调用查询全部
+                this.getAll();
+                //清空一下搜索内容
+                this.search={};
+
+            },
+            // 重置
+            reset(){
+                //清空数据模型
+                this.search={};
+            },
+        //     批量删除
+            batchDelete(){
+                if (this.multipleSelection.length ==0){
+                    this.$message.error("请选择需要删除的数据！")
+                }else {
+                    console.log('delete!');
+                    this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        //选中的是多个id，需要将每个对象的id获取出来
+                        for(let i = 0; i < this.multipleSelection.length; i++){
+                         this.ids[i] =  this.multipleSelection[i].id //取出数组中每个需要删除的id
+                        }
+                        //携带id发送请求
+                        axios.post("http://localhost:8080/javaweb_zhenghe/student/deleteBatch",this.ids).then( resp =>{
+                            if(resp.data =="success"){
+                                this.$message({
+                                    type: 'success',
+                                    message: '批量删除成功!'
+                                });
+                                this.getAll();
+                            }else {
+                                this.$message.error("数据发生了一些错误！");
+                            }
+                        })
+                    }).catch(() => {
+                        this.$message({
+                            type: 'info',
+                            message: '已取消删除'
+                        });
+                    });
+                }
+
+            },
+        //     新增
+            add(){
+                //弹出新增框
+                this.dialogFormVisible = true;
+                this.student = {};
+                console.log('add!');
+                //设置文字
+                this.info="新增数据信息";
+                //标识新增
+                this.ok="add";
+            },
+            // 弹出框关闭按钮
+            out(){
+                this.dialogFormVisible = false;
+                this.student = {};
+                this.$message('您取消了操作！');
+            },
+            // 弹出框提交按钮
+            okDo(){
+                //判断OK标识是新增还是修改
+                if(this.ok ==="add"){
+                    //新增
+                    this.addDo();
+                }else if (this.ok ==="update"){
+                    //修改
+                    this.updateDo();
+                }
+
+            },
+            //执行新增
+
+            addDo(){
+                axios.post("http://localhost:8080/javaweb_zhenghe/student/add",this.student).then( (resp) =>{
+                    console.log(resp.data);
+                    if (resp.data == "success"){
+                        //新增成功
+                        this.dialogFormVisible = false; //关闭弹框
+                        this.$message.success("新增数据成功！");
+                        //重新查询全部数据
+                        this.getAll();
+                    }else {
+                        this.$message.error("新增数据失败！");
+                    }
+                });
+            },
+            updateDo(){
+                //发送ajax携带表单数据进行修改
+                axios({
+                    method:"post",
+                    url:"http://localhost:8080/javaweb_zhenghe/student/update",
+                    data:this.student
+                }).then((resp) =>{
+                    console.log(resp.data);
+                    if(resp.data == "success"){
+                        this.dialogFormVisible = false; //关闭弹框
+                        this.$message.success("数据修改成功！");
+                        this.getAll();
+                    }else {
+                        this.$message.error("数据修改失败！");
+                    }
+                });
+            },
+        //     列表颜色
+            tableRowClassName({row, rowIndex}) {
+                if (rowIndex === 1) {
+                    return 'warning-row';
+                } else if (rowIndex === 3) {
+                    return 'success-row';
+                }
+                return '';
+            },
+        //     表格操作
+            //表格编辑
+            handleEdit(row) {
+                console.log(row);
+                //设置编辑的文字
+                this.info="编辑数据信息";
+                //标识修改
+                this.ok="update";
+                this.dialogFormVisible = true;
+                //this.student=row;//也可以去数据库根据id查询以后再显示
+                //发送ajax请求去查询相关数据
+                axios.get("http://localhost:8080/javaweb_zhenghe/student/getById?id="+row.id).then(resp => {
+                    console.log(resp.data);
+                    this.student=resp.data;
+                });
+            },
+            //表格删除
+            handleDelete(row) {
+                console.log(row);
+                this.$confirm('此操作将永久删除数据, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    //携带id发送请求进行删除
+                    // es6模版字符串
+                    //axios.get(`http://localhost:8080/javaweb_zhenghe/student/remove?id=${row.id}`).then()
+                    axios.get("http://localhost:8080/javaweb_zhenghe/student/remove?id="+row.id).then(resp => {
+                        console.log(resp.data)
+                        if(resp.data == "success"){
+                            this.$message({
+                                type: 'success',
+                                message: '删除成功!'
+                            });
+                            this.getAll();// 查询全部
+                        }else{
+                            this.$message.error("数据删除发生错误！")
+                        }
+                    })
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+            },
+
+        //     多选触发的事件
+            handleSelectionChange(val) {
+                this.multipleSelection = val;
+            },
+        //     分页
+            //显示条数发生改变
+            handleSizeChange(val) {
+                console.log(`每页 ${val} 条`);
+                this.pageSize = val;
+                this.getAll();
+            },
+            //当前页数发生改变
+            handleCurrentChange(val) {
+                console.log(`当前页: ${val}`);
+                this.currentPage =val;
+                this.getAll();
+            }
+        },
+        mounted(){
+            //页面挂载完成，发送请求到服务器加载所有的数据，调用一个函数。
+            console.log("您好！")
+            this.getAll();
+        }
+
+    })
+</script>

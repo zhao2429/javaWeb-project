@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="referrer" content="no-referrer">
+    <meta charset="UTF-8">
+    <title>登录页面</title>
+    <link rel="stylesheet" href="element-ui/lib/theme-chalk/index.css">
+    <style>
+        *{
+        //清除默认样式
+            margin: 0;
+            padding: 0;
+        }
+        body{
+            background-image: url("imgs/huanghun.jpg");
+            background-repeat: no-repeat;
+            background-size: 100% 720px;
+        }
+        #login{
+            /*  将盒子设置为弹性盒子*/
+            display: flex;
+            /*设置弹性盒子的元素的对齐方式*/
+            justify-content: center;
+            /*侧轴对齐*/
+            align-items: center;
+            /*对于没有设置过高度，宽度的盒子需要设置下面属性才可以居中*/
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+
+        }
+        .login{
+            width: 700px;
+            height: 500px;
+            /*margin: 0 auto;*/
+            background-color: rgba(252,230,201,0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 20px;
+        }
+    /*    验证码*/
+        #code{
+            font-family:Arial,宋体;
+            font-style:italic;
+            color:green;
+            border:0;
+            padding:2px 3px;
+            letter-spacing:3px;
+            font-weight:bolder;
+        }
+        h1{
+            color: #ebb563;
+            position: relative;
+            top: -280px;
+            left: 440px;
+        }
+    </style>
+</head>
+<body >
+<div id="login">
+<h1>教学管理系统</h1>
+    <!--    定义存储登录按钮的盒子-->
+    <div class="login"
+         v-loading="loading"
+         element-loading-text="拼命加载中"
+         element-loading-spinner="el-icon-loading"
+         element-loading-background="rgba(0, 0, 0, 0.8)">
+        <el-form ref="ruleform" :rules="rules" :model="form" label-width="80px">
+            <el-form-item style="color: red"><h2>请先进行登录！</h2></el-form-item>
+            <el-form-item label="用户名" prop="username">
+                <el-input v-model="form.username" placeholder="请输入用户名" autocomplete="off"  clearable></el-input>
+            </el-form-item>
+            <el-form-item label="密码" prop="password">
+                <el-input show-password v-model="form.password" placeholder="请输入密码" autocomplete="off"  clearable></el-input>
+            </el-form-item>
+
+            <el-form-item>
+                <template>
+                    <!-- `checked` 为 true 或 false -->
+                    <el-checkbox v-model="checked">记住我</el-checkbox>
+                    <!--  验证码   -->
+                    <input type = "text" id = "input" style="width: 80px"/>
+                    <input type="button" id="code" style="width:60px" title='验证码'/>
+<!--                    <el-link type="primary" @click="createCode()">看不清？</el-link>-->
+                    <a href="#" id="changeImg" @click="createCode()">看不清？</a>
+                </template>
+            </el-form-item>
+
+            <!--不同用户选项-->
+            <el-form-item label="用户">
+                    <el-radio v-model="radio" label="1">管理员</el-radio>
+                    <el-radio v-model="radio" label="2">老师</el-radio>
+                    <el-radio v-model="radio" label="3">学生</el-radio>
+            </el-form-item>
+
+            <el-form-item>
+                <el-button type="primary" @click="onSubmit('ruleform')">立即登录</el-button>
+                <el-button type="danger" @click="reset('ruleform')">清空数据</el-button>
+                <el-button type="success" @click="register('ruleform')">注册</el-button>
+            </el-form-item>
+        </el-form>
+
+        <!--    新增管理员弹出框-->
+        <el-dialog :title="info" :visible.sync="dialogFormVisible">
+            <el-form :model="admin" :rules="adminrules" ref="checkadmin" v-if="dialogFormVisible">
+                <el-form-item label="管理员名称" :label-width="formLabelWidth" prop="username">
+                    <el-input v-model="admin.username" autocomplete="off" @blur="searchName()"></el-input>
+                </el-form-item>
+                <el-form-item label="密码"  :label-width="formLabelWidth" prop="password">
+                    <el-input type="password" show-password v-model="admin.password" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="确认密码"  :label-width="formLabelWidth"  prop="checkpassword">
+                    <el-input type="password" show-password v-model="admin.checkpassword" autocomplete="off"></el-input>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="out()">取 消</el-button>
+                <el-button type="primary" @click="adminDo()">确 定</el-button>
+            </div>
+        </el-dialog>
+    </div>
+</div>
+</body>
+</html>
+<!--1.引入Vue.js-->
+<script src="js/vue.js"></script>
+<script src="js/axios-0.18.0.js"></script>
+<!--2：引入elementUI.js-->
+<script src="element-ui/lib/index.js"></script>
+<script>
+    new Vue({
+        el:"#login",
+        data(){
+            //弹出框密码验证
+            var validatePass = (rule, value, callback) => {
+                if (value === '') {
+
+                    callback(new Error('请输入密码'));
+                } else {
+                    if (this.admin.checkpassword !== '') {
+                        this.$refs.checkadmin.validateField('checkpassword');
+                    }
+                    callback();
+                }
+            };
+            var validatePass2 = (rule, value, callback) => {
+
+                if (value === '') {
+                    callback(new Error('请再次输入密码'));
+                } else if (value != this.admin.password) {
+                    callback(new Error('两次输入密码不一致!'));
+                } else {
+                    callback();
+                }
+            };
+            return{
+                // 验证码，
+                code:"",
+                // 记住我按钮(true选中状态)
+                checked:false,
+                /*用户选项登录*/
+                radio:{},
+                // 弹出框
+                dialogFormVisible: false,
+                formLabelWidth: '120px',
+
+                form: {
+                    username:'',
+                    password:'',
+                },
+                //注册admin
+                admin:{
+                    username:'',
+                    password:'',
+                    checkpassword:'',
+
+                },
+
+                info:'',
+                loading:false,
+
+                //     定义表单验证的规则
+                rules:{
+                    //     指定需要验证的属性和规则,多条规则
+                    username:[
+                        //     第一条规则,第一个是必填，第二个是错误提示信息，第三个是什么时候触发
+                        {required: true, message: '用户名不能为空', trigger: 'blur' },
+                        {min: 2, max: 5, message: '用户名长度在 2 到 5 个字符', trigger: 'blur'}
+                    ],
+                    password:[
+                        {required: true, message: '密码不能为空', trigger: 'blur'},
+                    ],
+                },
+                // 弹出框验证规则
+                adminrules:{
+                    username:[
+                        //     第一条规则,第一个是必填，第二个是错误提示信息，第三个是什么时候触发
+                        {required: true, message: '用户名不能为空', trigger: 'blur' },
+                        {min: 2, max: 5, message: '用户名长度在 2 到 5 个字符', trigger: 'blur'}
+                    ],
+                    password: [
+                        { validator: validatePass,trigger: 'blur' ,required: true,}
+                    ],
+                    checkpassword: [
+                        { validator: validatePass2,trigger: 'blur',required: true, }
+                    ],
+                },
+
+            }
+        },
+
+
+        methods: {
+            // 记住我功能的判断方法.用在登录里面验证，这里单独剔除
+            //把按钮也记住，，方便后续的判断
+            chooseCookie(){
+                if (this.checked){
+                    //base64加密
+                    //let password = Base64.encode(this.form.password);
+                    this.setCookie(this.form.username,this.form.password,this.radio,7);
+                }else {
+                    this.setCookie("","","",-1);
+                }
+
+            },
+            // 设置cookie
+            setCookie(username,password,radio,days){
+                //获取时间
+                let date = new Date();
+            //     保存的天数
+                date.setTime(date.getTime() + 24 * 60 * 60 * 1000 * days);
+            //     字符串拼接cookie
+                window.document.cookie = "username" + "=" + username + ";path=/;expires=" + date.toGMTString();
+                window.document.cookie = "password" + "=" + password + ";path=/;expires=" + date.toGMTString();
+                window.document.cookie = "radio" + "=" + radio + ";path=/;expires=" + date.toGMTString();
+            },
+            // 读取cookie将用户名和密码回显到input框中
+            getCookie(){
+              if (document.cookie.length > 0){
+                  // 分割成一个独立的“key = value”的形式
+                  let arr = document.cookie.split("; ");
+                  for (let i = 0; i < arr.length; i++) {
+                  //     再次分割 arr2【0】是key 的值，arr2【1】对应是value
+                      let arr2 = arr[i].split("=");
+                      if (arr2[0].trim() == "username"){
+                          this.form.username = arr2[1];
+                      }else if (arr2[0].trim() == "password"){
+                          // base64 解密
+                          //this.form.password = Base64.decode(arr2[1]);
+                          this.form.password = arr2[1];
+
+                      }else if(arr2[0].trim() == "radio"){
+                          this.radio = arr2[1];
+                          // 记住我打钩
+                          this.checked = true;
+                      }
+                  }
+              }
+            },
+            onSubmit(formName) {
+                // 表单验证通过后提交
+                // 通过Vue对象来使用热饭属性获取表单对象
+                this.$refs[formName].validate((valid) => {
+                    if(this.validate()){
+                        //验证码验证
+                        if(valid) {
+                            // 记住我功能
+                            this.chooseCookie();
+                            this.loading = true;
+                            //通过验证,发送数据到服务器验证登录并且返回结果
+                            //判断登录的结果
+                            // 如果是管理员选项执行管理员登录
+                            if (this.radio == "1") {
+                                this.loading = false;
+
+                                axios({
+                                    method: 'post',
+                                    url: 'http://localhost:8080/javaweb_project01/admin/login',
+                                    data: this.form
+                                }).then(resp => {
+                                    console.log(resp.data);
+                                    //根据后台响应的结果判断显示
+                                    if (resp.data == '-1') {
+
+                                        //用户名不存在
+                                        this.loading = false;
+                                        this.$message.error('用户名不存在，请重试！');
+                                        return false;
+                                    }
+                                    if (resp.data == '-2') {
+                                        //密码错误
+                                        this.loading = false;
+                                        this.$message.error('用户名密码错误，请重试！');
+                                        return false;
+                                    }
+                                    //以上判断都没有问题
+                                    //成功跳转首页
+                                    //可以将登录成功后的信息存储起来方便在页面展示
+                                    localStorage.setItem("loginName", resp.data);
+                                    localStorage.setItem("radio", this.radio);
+                                    location.href = "http://localhost:8080/javaweb_project01/index.html";
+                                });
+                                //     如果是教师执行教师登录
+                            } else if (this.radio == "2") {
+                                //验证码验证
+                                this.loading = false;
+
+                                axios({
+                                    method: 'post',
+                                    url: 'http://localhost:8080/javaweb_project01/teacher/login',
+                                    data: this.form
+                                }).then(resp => {
+                                    console.log(resp.data);
+
+                                    //根据后台响应的结果判断显示
+                                    if (resp.data == '-1') {
+                                        //用户名不存在
+                                        this.loading = false;
+                                        this.$message.error('用户名不存在，请重试！');
+                                        return false;
+                                    }
+                                    if (resp.data == '-2') {
+                                        //密码错误
+                                        this.loading = false;
+                                        this.$message.error('用户名密码错误，请重试！');
+                                        return false;
+                                    }
+                                    //以上判断都没有问题
+                                    //成功跳转首页
+                                    //可以将登录成功后的信息存储起来方便在页面展示
+                                    localStorage.setItem("loginName", resp.data);
+                                    localStorage.setItem("radio", this.radio);
+                                    location.href = "http://localhost:8080/javaweb_project01/index.html";
+                                });
+                                //学生登录
+                            } else if (this.radio == "3"){
+                                //验证码验证
+                                this.loading = false;
+
+                                axios({
+                                    method: 'post',
+                                    url: 'http://localhost:8080/javaweb_project01/student/login',
+                                    data: this.form
+                                }).then(resp => {
+                                    console.log(resp.data);
+                                    //根据后台响应的结果判断显示
+                                    if (resp.data == '-1') {
+                                        //用户名不存在
+                                        this.loading = false;
+                                        this.$message.error('用户名不存在，请重试！');
+                                        return false;
+                                    }
+                                    if (resp.data == '-2') {
+                                        //密码错误
+                                        this.loading = false;
+                                        this.$message.error('用户名密码错误，请重试！');
+                                        return false;
+                                    }
+                                    //以上判断都没有问题
+                                    //成功跳转首页
+                                    //可以将登录成功后的信息存储起来方便在页面展示
+                                    localStorage.setItem("loginName", resp.data);
+                                    localStorage.setItem("radio", this.radio);
+                                    location.href = "http://localhost:8080/javaweb_project01/index.html";
+                                });
+                            }else {
+                                this.loading = false;
+                                this.$message.error("请选择用户！")
+                            }
+                        }else {
+                            //信息验证错误
+                            this.loading = false;
+                            this.$message.error("您的登录信息有误，请重新登录！")
+                            console.log('失败!');
+                            return false;
+
+                        }
+                    }
+                })
+            },
+
+            //     清空表单
+            reset(formName) {
+                // 获取多有表单，清空所有属性
+                this.$refs[formName].resetFields();
+                document.getElementById("input").value = "";//清空文本框
+                this.radio={};
+                this.checked = false;
+            },
+            // 注册功能按钮
+            register(formName) {
+                 if (this.radio == "1"){
+                    //弹出新增框
+                    this.dialogFormVisible = true;
+                    this.info="注册信息";
+                }else {
+                    this.$message.error('此权限为管理员！请直接登录');
+                }
+            },
+        //     弹出框
+            // 弹出框关闭按钮
+            out(){
+                this.dialogFormVisible = false;
+                this.admin = {};
+                this.$message('您取消了操作！');
+            },
+
+            //注册判断用户名是否存在
+            searchName(){
+                    console.log(this.admin.username);
+                if(this.admin.username != ""){
+                        axios.get("http://localhost:8080/javaweb_project01/admin/searchName?username="+this.admin.username).then( (resp) =>{
+                            console.log(resp.data);
+                            //根据后台响应的结果判断显示
+                            if (resp.data == 'success') {
+                                //用户名不存在
+                                this.loading = false;
+                                this.$message.success('用户名通过！');
+                            }
+                            if (resp.data == 'error') {
+                                console.log("错误")
+                                //密码错误
+                                this.loading = false;
+                                this.$message.error('用户名重复，请重试！');
+                                return false;
+                            }
+                        });
+
+                }
+            },
+            // 弹出框提交按钮
+            adminDo(){
+                this.$refs['checkadmin'].validate((valid) => {
+                    if (valid) {
+                        axios.post("http://localhost:8080/javaweb_project01/admin/register",this.admin).then( (resp) =>{
+                            console.log(resp.data);
+                            if (resp.data == "success"){
+                                //新增成功
+                                this.dialogFormVisible = false; //关闭弹框
+                                this.$message.success("注册成功！");
+                            }else {
+                                this.$message.error("注册失败！");
+                            }
+                        });
+                    }else {
+                        this.$message.error('请完善相关信息！');
+                        return false;
+                    }
+                });
+
+            },
+            validate(){
+                //取得输入的验证码并转为大写
+                var inputCode = document.getElementById("input").value.toUpperCase();
+                console.log(inputCode);
+                if (inputCode.length <=0){
+                    //如长度不够提示错误
+                    this.$message.error("请输入验证码！");
+                    return false;
+                }else if (inputCode != this.code){
+                    this.$message.error("验证码错误！");
+                    document.getElementById("input").value = "";//清空文本框
+                    return false;
+                }else {
+                    this.$message.success("验证码正确！");
+                    return true;
+                }
+            },
+            createCode(){
+                var codeLength = 4;
+                let checkCode = document.getElementById("code");
+                // 产生随机数
+                let random = new Array(0,1,2,3,4,5,6,7,8,9,'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R',
+                    'S','T','U','V','W','X','Y','Z');
+                this.code = '';
+                //     循环操作
+                for(let i = 0; i < codeLength; i++) {
+                    //     获得随机数的索引(0-35)
+                    let index = Math.floor(Math.random()*36);
+                    //根据索引取得随机数加到code上
+                    this.code  += random[index];
+                }
+                //把code赋值给验证码
+                  checkCode.value = this.code;
+            }
+
+        },
+        mounted(){
+            //判断cookie 的值
+            // 记住我功能
+            // mounted()生命周期钩子函数会在组件实例被挂载到DOM后立即执行，
+            this.getCookie();
+            this.createCode();
+        },
+        created(){
+            //设置点击回车直接登录
+            document.onkeydown = (e) =>{
+                var e = event || window.event;
+                if (e && e.keyCode == 13){
+                    this.onSubmit();
+                }
+            }
+        }
+
+    })
+
+</script>
+
+

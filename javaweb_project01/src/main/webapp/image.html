@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Document</title>
+</head>
+
+<body>
+<form action="http://localhost:8080/javaweb_project01/upload" method="post" name="form" id="form"   enctype="multipart/form-data">
+<table>
+
+  <tr>
+    <td>图片：</td>
+    <td>
+      <input type="file" id="uploadImage" name="uploadImage"
+             accept="image/gif,image/png,image/jpeg,image/bmp"/>
+
+      <input type="hidden" id="imgUrl" name="entity.imgUrl"
+             value="<s:property value='entity.imgUrl'/>">
+
+      <span>提示：文件大小不超过200k，建议图片宽高为300px*300px</span>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <input type="submit" value="提交"/>
+      <input type="reset" value="取消">
+    </td>
+  </tr>
+</table>
+</form>
+</body>
+</html>

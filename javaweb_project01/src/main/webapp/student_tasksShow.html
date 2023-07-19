@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>课程作业</title>
+    <link rel="stylesheet" href="element-ui/lib/theme-chalk/index.css">
+</head>
+<body>
+<div id="app">
+    <template><el-button type="text" style="font-size: 36px; font-weight: bold">作业内容：</el-button></template>
+    <el-divider></el-divider>
+    <!--    渲染数据表格-->
+    <template>
+        <el-table
+                :data="tableData"
+                style="width: 100%"
+                :row-class-name="tableRowClassName"
+                @selection-change="handleSelectionChange">
+            <el-table-column
+                    type="selection"
+                    width="55"
+                    align="center">
+            </el-table-column>
+            <el-table-column
+                    prop="id"
+                    label="编号"
+                    width="100">
+            </el-table-column>
+            <el-table-column
+                    prop="teachername"
+                    label="老师"
+                    width="120">
+            </el-table-column>
+            <el-table-column
+                    prop="workname"
+                    label="作业标题"
+                    width="200">
+            </el-table-column>
+            <el-table-column
+                    prop="starttime"
+                    label="开始时间"
+                    width="200"
+                    :formatter="formatDate">
+            </el-table-column>
+            <el-table-column
+                    prop="endtime"
+                    label="结束时间"
+                    width="200"
+                    :formatter="formatDate">
+            </el-table-column>
+            <el-table-column
+                    prop="homework"
+                    label="作业内容"
+                    width="550">
+            </el-table-column>
+        </el-table>
+    </template>
+</div>
+</body>
+</html>
+<!--1.引入Vue.js-->
+<script src="js/vue.js"></script>
+<!--2：引入elementUI.js-->
+<script src="element-ui/lib/index.js"></script>
+<script src="js/axios-0.18.0.js"></script>
+<script>
+    new Vue({
+        el:"#app",
+        data(){
+            return {
+                //   表格原始数据
+                tableData: [{
+                    id:1,
+                    teachername: '老师',
+                    workname:'完成布局',
+                    starttime:'2023-06-14 21:12:05',
+                    endtime:'2023-06-17 21:12:05',
+                    homework:'参考elementUI官网,完成今天上课时的布局内容',
+                }],
+            }
+
+        },
+        methods:{
+            //查询全部
+            getAll(){
+                axios.get("http://localhost:8080/javaweb_project01/course/getAll").then((resp) =>{
+                    console.log(resp.data);
+                    //将查询到的数据赋值给数据模型
+                    this.tableData=resp.data;
+                });
+            },
+
+            // 显示时间
+            formatDate(row, column) {
+                // 获取单元格数据
+                let data = row[column.property]
+                if(data == null) {
+                    return null
+                }
+                let dt = new Date(data);
+                return dt.getFullYear() + '-' + (dt.getMonth() + 1) + '-' + dt.getDate() + ' ' + dt.getHours() + ':' + dt.getMinutes() + ':' + dt.getSeconds();
+            },
+            resetForm(formName) {
+                // 获取多有表单，清空所有属性
+                this.$refs[formName].resetFields();
+                this.ruleForm={};
+            },
+            //     列表颜色
+            tableRowClassName({row, rowIndex}) {
+                if (rowIndex === 1) {
+                    return 'warning-row';
+                } else if (rowIndex === 3) {
+                    return 'success-row';
+                }
+                return '';
+            },
+        },
+        mounted(){
+            //页面挂载完成，发送请求到服务器加载所有的数据，调用一个函数。
+            console.log("您好！")
+            this.getAll();
+        }
+
+    })
+</script>

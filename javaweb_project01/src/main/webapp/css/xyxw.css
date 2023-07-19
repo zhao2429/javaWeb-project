@@ -1,0 +1,311 @@
+@charset "utf-8";
+/* CSS Document */
+
+* {
+    margin: 0;
+    padding: 0;
+    text-decoration: none;
+    list-style: none;
+    font-size: 14px;
+    color: #666666;
+    font-family: "微软雅黑";
+}
+
+.fl {
+    clear: both;
+    height: 0;
+    font-size: 0;
+    line-height: 0;
+}
+
+img {
+    border: 0;
+    margin: 0;
+}
+
+body {
+    background: #8ec4dc;
+}
+
+
+.main {
+    width: 1050px;
+    background: #FFFFFF;
+    margin: 0 auto;
+    padding: 30px;
+}
+
+h2 {
+    font-size: 20px;
+    width: 98%;
+    height: 50px;
+    line-height: 50px;
+    color: #1e9fd9;
+    padding-left: 2%;
+    border-bottom: 2px solid #1e9fd9;
+}
+
+.text {
+    margin-top: 10px;
+}
+
+.text_1 {
+    width: 450px;
+    float: left;
+}
+
+.text_1 p {
+    line-height: 26px;
+    font-size: 16px;
+    color: #666;
+    text-indent: 25px;
+    margin-top: 8px;
+}
+
+.text_2 {
+    width: 300px;
+    float: right;
+}
+
+.text p {
+    line-height: 26px;
+    font-size: 16px;
+    color: #666;
+    text-indent: 25px;
+    margin-top: 8px;
+}
+
+.news {
+    margin-top: 10px;
+}
+
+.news li {
+    line-height: 40px;
+    font-size: 14px;
+}
+
+.news li a {
+    padding-left: 10px;
+}
+
+.news li a:hover {
+    color: #1e9fd9;
+}
+
+.tupian {
+    margin-top: 10px;
+}
+
+.tupian a {
+    margin-right: 10px;
+}
+
+h3 {
+    line-height: 60px;
+    font-size: 20px;
+    text-align: center;
+    margin-top: 10px;
+}
+
+.text_3 img {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.back {
+    width: 900px;
+    height: 60px;
+    margin-top: 50px;
+    text-align: center;
+}
+
+.back a {
+    padding: 15px 50px 15px 50px;
+    background: #8ec222;
+    color: #FFF;
+}
+
+
+.center {
+    width: 100%;
+}
+
+.left {
+    width: 300px;
+    float: left;
+    padding-left: 10px;
+}
+
+.right {
+    width: 600px;
+    float: right;
+}
+
+.kuang {
+    width: 220px;
+    height: 30px;
+    border: 1px solid #CCC;
+}
+
+.kuang1 {
+    border: 1px solid #CCC;
+}
+
+.bottom {
+    width: 100%;
+    height: 100px;
+    line-height: 100px;
+    font-size: 30px;
+    text-align: center;
+    color: #FFF;
+}
+.text_1 dl{
+    display: inline-block;
+    vertical-align: top;
+    border-radius: 13px;
+    background: #fff;
+    padding: 4px 18px 0;
+    height: 360px;
+    width: 348px;
+    box-shadow: 0 0 7px rgba(234,234,234,0.74);
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    text-align: justify;
+    text-justify: distribute-all-lines;
+    font-size: 0;
+    background: #fff;
+    font: 14px/1.5 "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+    color: #333;
+}
+dd {
+    display: block;
+    margin-inline-start: 40px;
+    margin: 0;
+    padding: 0;
+
+}
+.text_1 dl dd h3 {
+    font-size: 22px;
+    color: #323232;
+    text-align: left;
+    color: #1e9fd9;
+}
+.text_1 dl dd h3 a {
+    font-size: 15px;
+    color: #616161;
+    font-weight: normal;
+    float: right;
+}
+.text_1 dl dd p {
+    font-size: 0;
+    margin-bottom: 24px;
+    width: 348px;
+    height: 16px;
+}
+.text_1 dl dd p span {
+    width: 16px;
+    height: 16px;
+    color: #fff;
+    line-height: 16px;
+    text-align: center;
+    background: #d50212;
+    font-size: 15px;
+    position: relative;
+    left: -30px;
+    top: 27px;
+    padding: 2px;
+}
+
+.text_1 dl dd p a {
+    font-size: 15px;
+    color: #323232;
+    line-height: 16px;
+    padding-left: 11px;
+    width: 318px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.text_1 dl dd p>a:hover{
+    color: #d50212;
+    text-decoration: underline;
+}
+.text_2 {
+    width: 500px;
+    float: right;
+}
+.text_2 dl{
+    display: inline-block;
+    vertical-align: top;
+    border-radius: 13px;
+    background: #fff;
+    padding: 4px 18px 0;
+    height: 360px;
+    width: 348px;
+    box-shadow: 0 0 7px rgba(234,234,234,0.74);
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    text-align: justify;
+    text-justify: distribute-all-lines;
+    font-size: 0;
+    background: #fff;
+    font: 14px/1.5 "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+    color: #333;
+}
+dd {
+    display: block;
+    margin-inline-start: 40px;
+    margin: 0;
+    padding: 0;
+
+}
+.text_2 dl dd h3 {
+    font-size: 22px;
+    color: #323232;
+    text-align: left;
+    color: #1e9fd9;
+}
+.text_2 dl dd h3 a {
+    font-size: 15px;
+    color: #616161;
+    font-weight: normal;
+    float: right;
+}
+.text_2 dl dd p {
+    font-size: 0;
+    margin-bottom: 24px;
+    width: 348px;
+    height: 16px;
+}
+.text_2 dl dd p span {
+    width: 16px;
+    height: 16px;
+    color: #fff;
+    line-height: 16px;
+    text-align: center;
+    background: #d50212;
+    font-size: 15px;
+    position: relative;
+    left: -30px;
+    top: 27px;
+    padding: 2px;
+}
+
+.text_2 dl dd p a {
+    font-size: 15px;
+    color: #323232;
+    line-height: 16px;
+    padding-left: 20px;
+    width: 318px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.text_2 dl dd p>a:hover{
+    color: #d50212;
+    text-decoration: underline;
+}

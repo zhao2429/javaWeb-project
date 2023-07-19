@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>学生请假信息</title>
+    <link rel="stylesheet" href="element-ui/lib/theme-chalk/index.css">
+</head>
+<body>
+<div id="app">
+  <!--    提供操作的按钮组-->
+  <el-row>
+    <el-button type="danger" icon="el-icon-plus" @click="add()">新增</el-button>
+  </el-row>
+  <!--    新增弹出框-->
+  <el-dialog :title="info" :visible.sync="dialogFormVisible">
+    <el-form :model="student">
+      <el-form-item label="姓名" :label-width="formLabelWidth">
+        <el-input v-model="student.username" autocomplete="off"></el-input>
+      </el-form-item>
+      <el-form-item label="年级"  :label-width="formLabelWidth">
+        <el-select v-model="student.grade" placeholder="请选择">
+          <el-option
+                  v-for="item in options"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="天数" :label-width="formLabelWidth">
+        <el-input v-model="student.days" autocomplete="off"></el-input>
+      </el-form-item>
+      <el-form-item label="请假时间" :label-width="formLabelWidth">
+        <el-form-item label="开始时间">
+          <div class="block">
+            <el-date-picker
+                    v-model="student.time"
+                    type="datetime"
+                    placeholder="选择日期时间">
+            </el-date-picker>
+          </div>
+        </el-form-item>
+      </el-form-item>
+      <el-form-item label="请假原因" :label-width="formLabelWidth">
+        <!--      下拉单选-->
+        <template>
+          <el-select v-model="student.cause" placeholder="请选择">
+            <el-option
+                    v-for="item in causes"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+            </el-option>
+          </el-select>
+        </template>
+      </el-form-item>
+    </el-form>
+    <div slot="footer" class="dialog-footer">
+      <el-button @click="out()">取 消</el-button>
+      <el-button type="primary" @click="addDo()">确 定</el-button>
+    </div>
+  </el-dialog>
+  <!--    渲染数据表格-->
+  <template>
+    <el-table
+            :data="tableData"
+            style="width: 100%"
+            :row-class-name="tableRowClassName"
+            @selection-change="handleSelectionChange">
+      <el-table-column
+              type="selection"
+              width="55"
+              align="center">
+      </el-table-column>
+      <el-table-column
+              prop="id"
+              label="编号"
+              width="180">
+      </el-table-column>
+      <el-table-column
+              prop="username"
+              label="姓名"
+              width="180">
+      </el-table-column>
+      <el-table-column
+              prop="grade"
+              label="年级"
+              width="120">
+      </el-table-column>
+      <el-table-column
+              prop="days"
+              label="天数"
+              width="180">
+      </el-table-column>
+      <el-table-column
+              prop="time"
+              label="请假时间"
+              width="380"
+              :formatter="formatDate">
+      </el-table-column>
+      <el-table-column
+              prop="cause"
+              label="请假类型"
+              width="180">
+      </el-table-column>
+    </el-table>
+  </template>
+  <!--    分页-->
+  <div class="block">
+    <el-pagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="currentPage"
+            :page-sizes="[5, 10, 15, 20]"
+            :page-size="pageSize"
+            layout="sizes, prev, pager, next, jumper,->,total"
+            :total="total">
+    </el-pagination>
+  </div>
+</div>
+</body>
+</html>
+<!--1.引入Vue.js-->
+<script src="js/vue.js"></script>
+<!--2：引入elementUI.js-->
+<script src="element-ui/lib/index.js"></script>
+<script src="js/axios-0.18.0.js"></script>
+<script>
+  new Vue({
+    el:"#app",
+    data(){
+      return{
+        //收集弹出数据，定义一个空对象
+        student:{},
+        info:'',
+        dialogFormVisible: false,
+        formLabelWidth: '120px',
+        tableData: [{
+          id:1,
+          username: '王小虎',
+          grade:'中级班',
+          days:'2.5天',
+          time:'2023-06-16 20:30:00',
+          cause:'事假'
+        }, {
+          id:2,
+          username: '王大虎',
+          grade:'中级班',
+          days:'2.5天',
+          time:'2023-06-16 20:30:00',
+          cause:'事假'
+        }],
+        //     分页
+        currentPage:1,//当前页
+        total:10,//总页数
+        pageSize:5,//每页默认显示几条
+        //   下拉框
+        options: [{
+          value: '初级班',
+          label: '初级班'
+        }, {
+          value: '中级班',
+          label: '中级班'
+        }, {
+          value: '高级班',
+          label: '高级班'
+        }],
+        causes: [{
+          value: '事假',
+          label: '事假'
+        }, {
+          value: '病假',
+          label: '病假'
+        }],
+      }
+    },
+    methods:{
+      getAll(){
+        //如果有模糊条件，带条件分页，如果没有则直接分页（初始化）
+        axios.post("http://localhost:8080/javaweb_project01/leave/findAllByPage?currentPage="+this.currentPage+"&pageSize="+this.pageSize).then((resp) =>{
+          console.log(resp.data);
+          //将查询到的数据赋值给数据模型
+          this.tableData=resp.data.list;/*数据*/
+          this.total = resp.data.count;/*数据的总数*/
+        });
+      },
+      //时间
+      formatDate(row, column) {
+        // 获取单元格数据
+        let data = row[column.property]
+        if(data == null) {
+          return null
+        }
+        let dt = new Date(data);
+        return dt.getFullYear() + '-' + (dt.getMonth() + 1) + '-' + dt.getDate() + ' ' + dt.getHours() + ':' + dt.getMinutes() + ':' + dt.getSeconds();
+      },
+      //     分页
+      //显示条数发生改变
+      handleSizeChange(val) {
+        console.log(`每页 ${val} 条`);
+        this.pageSize = val;
+        this.getAll();
+      },
+      //当前页数发生改变
+      handleCurrentChange(val) {
+        console.log(`当前页: ${val}`);
+        this.currentPage =val;
+        this.getAll();
+      },
+      //     列表颜色
+      tableRowClassName({row, rowIndex}) {
+        if (rowIndex === 1) {
+          return 'warning-row';
+        } else if (rowIndex === 3) {
+          return 'success-row';
+        }
+        return '';
+      },
+      //     新增
+      add(){
+        //弹出新增框
+        this.dialogFormVisible = true;
+        this.student = {};
+        console.log('add!');
+        //设置文字
+        this.info="新增学生请假信息";
+      },
+      // 弹出框关闭按钮
+      out(){
+        this.dialogFormVisible = false;
+        this.student = {};
+        this.$message('您取消了操作！');
+      },
+      //执行新增
+
+      addDo(){
+        axios.post("http://localhost:8080/javaweb_project01/leave/add",this.student).then( (resp) =>{
+          console.log(resp.data);
+          if (resp.data == "success"){
+            //新增成功
+            this.dialogFormVisible = false; //关闭弹框
+            this.$message.success("新增数据成功！");
+            //重新查询全部数据
+            this.getAll();
+          }else {
+            this.$message.error("新增数据失败！");
+          }
+        });
+      },
+    },
+    mounted(){
+      //页面挂载完成，发送请求到服务器加载所有的数据，调用一个函数。
+      console.log("您好！")
+      this.getAll();
+    }
+  })
+</script>
